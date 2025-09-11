@@ -1,5 +1,5 @@
 # 构建阶段 - 使用Maven 3.6.0和JDK 8
-FROM eclipse-temurin:20 as build
+FROM maven:3.8.5-openjdk-17 as build
 
 # 指定构建过程中的工作目录
 WORKDIR /app
