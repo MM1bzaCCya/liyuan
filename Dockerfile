@@ -14,7 +14,7 @@ COPY src /app/src
 RUN mvn -s /app/settings.xml -f /app/pom.xml clean package -DskipTests
 
 # 运行阶段 - JRE17
-FROM openjdk:17-jre-slim
+FROM openjdk:17-jre-alpine
 
 # 设置时区为上海
 RUN apk add tzdata && \
