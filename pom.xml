@@ -15,13 +15,13 @@
     <description>音乐点歌厅项目</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <!-- 统一版本管理 -->
         <mybatis.version>2.2.2</mybatis.version>
         <jwt.version>0.9.1</jwt.version>
         <jaxb.version>2.3.1</jaxb.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
