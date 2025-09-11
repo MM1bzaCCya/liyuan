@@ -1,5 +1,5 @@
-# 构建阶段
-FROM maven:3.6.0-jdk-17-slim as build
+# 构建阶段 - 使用Maven 3.6.0和JDK 8
+FROM maven:3.6.0-jdk-8-slim as build
 
 # 指定构建过程中的工作目录
 WORKDIR /app
@@ -13,13 +13,8 @@ COPY src /app/src
 # 执行代码编译命令（使用国内镜像加速）
 RUN mvn -s /app/settings.xml -f /app/pom.xml clean package -DskipTests
 
-# 运行阶段
-FROM alpine:3.13
-
-# 使用腾讯云镜像源安装依赖
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tencent.com/g' /etc/apk/repositories \
-    && apk add --update --no-cache openjdk8-jre-base \
-    && rm -f /var/cache/apk/*
+# 运行阶段 - 使用轻量级的Alpine Linux和JRE 8
+FROM openjdk:8-jre-alpine
 
 # 设置时区为上海
 RUN apk add tzdata && \
@@ -27,7 +22,7 @@ RUN apk add tzdata && \
     echo "Asia/Shanghai" > /etc/timezone && \
     apk del tzdata
 
-# 安装CA证书
+# 安装CA证书（用于HTTPS）
 RUN apk add --no-cache ca-certificates
 
 # 指定运行时的工作目录
