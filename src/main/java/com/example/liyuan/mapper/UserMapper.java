@@ -27,7 +27,6 @@ public interface UserMapper {
 
     @Delete("DELETE FROM users WHERE id = #{id}")
     int deleteById(Long id);
-
     @Update("UPDATE users SET user_type=#{userType}, update_time=#{updateTime} WHERE id=#{id}")
     int updateUserType(User user);
 }
