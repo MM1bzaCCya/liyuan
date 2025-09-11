@@ -13,8 +13,8 @@ COPY src /app/src
 # 执行代码编译命令（使用国内镜像加速）
 RUN mvn -s /app/settings.xml -f /app/pom.xml clean package -DskipTests
 
-# 运行阶段 - 使用轻量级的Alpine Linux和JRE 8
-FROM openjdk:8-jre-alpine
+# 运行阶段 - JRE17
+FROM openjdk:17-jre-slim
 
 # 设置时区为上海
 RUN apk add tzdata && \
