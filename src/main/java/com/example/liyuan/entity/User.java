@@ -8,8 +8,11 @@ public class User {
     private Long id;
     private String wechatOpenid;     // 微信openid
     private String wechatUnionid;    // 微信unionid
-    private String nickname;         // 微信昵称
+    private String nickname;         // 微信昵称（不可修改）
+    private String customNickname;   // 自定义昵称（可修改）-- 新增字段
     private String avatar;           // 微信头像
+    private String customAvatar;     // 自定义头像（可修改）-- 新增字段，可选
+    private String bio;              // 个人简介 -- 新增字段
     private Integer gender;          // 性别：0-未知，1-男，2-女
     private String country;          // 国家
     private String province;         // 省份

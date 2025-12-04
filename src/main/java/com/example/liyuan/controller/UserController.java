@@ -42,7 +42,76 @@ public class UserController {
             return ResponseEntity.badRequest().body(Map.of("code", 400, "msg", "用户信息更新失败"));
         }
     }
+    @PostMapping("/depositPoints")
+    public ResponseEntity<Map<String, Object>> depositPoints(@RequestHeader("Authorization") String token,
+                                                             @RequestBody Map<String, Integer> request) {
+        try {
+            // 从token中获取用户ID
+            Long userId = getUserIdFromToken(token.replace("Bearer ", ""));
 
+            Integer points = request.get("points");
+
+            if (points == null || points <= 0) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "code", 400,
+                        "msg", "积分数量必须为正整数"
+                ));
+            }
+
+            // 检查积分档位是否合法（10, 20, 50, 100, 200, 300）
+            int[] validPoints = {10, 20, 50, 100, 200, 300};
+            boolean isValid = false;
+            for (int validPoint : validPoints) {
+                if (points == validPoint) {
+                    isValid = true;
+                    break;
+                }
+            }
+
+            if (!isValid) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "code", 400,
+                        "msg", "请选择正确的积分档位"
+                ));
+            }
+
+            // 获取当前用户
+            User user = userService.getUserById(userId);
+            if (user == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "code", 400,
+                        "msg", "用户不存在"
+                ));
+            }
+
+            // 增加用户积分
+            boolean result = userService.addUserPoints(userId, points);
+
+            if (result) {
+                // 返回更新后的用户信息
+                User updatedUser = userService.getUserById(userId);
+                return ResponseEntity.ok(Map.of(
+                        "code", 200,
+                        "msg", "积分充值成功",
+                        "data", Map.of(
+                                "userId", userId,
+                                "points", updatedUser.getPoints(),
+                                "depositAmount", points
+                        )
+                ));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "code", 400,
+                        "msg", "积分充值失败"
+                ));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "code", 400,
+                    "msg", "充值失败: " + e.getMessage()
+            ));
+        }
+    }
 
 
 

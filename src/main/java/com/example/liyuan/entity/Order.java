@@ -2,6 +2,8 @@ package com.example.liyuan.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,6 +16,9 @@ public class Order {
     private String songName;
     private String originalSinger;
     private Integer status; // 0-待演唱, 1-演唱中, 2-已完成, 3-已取消
+    private BigDecimal amount; // 支付金额
+    private Integer points; // 消耗的积分（如果是积分支付）
+    private String paymentType; // 支付方式：wechat、alipay、points
     private Integer queueNumber;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime singTime;

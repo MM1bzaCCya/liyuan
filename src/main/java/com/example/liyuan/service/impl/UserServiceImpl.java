@@ -52,4 +52,17 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+    @Override
+    public boolean deductUserPoints(Long id, Integer points) {
+        User user = userMapper.selectById(id);
+        if (user != null) {
+            if (user.getPoints() < points) {
+                throw new RuntimeException("积分不足，当前积分：" + user.getPoints());
+            }
+            user.setPoints(user.getPoints() - points);
+            user.setUpdateTime(LocalDateTime.now());
+            return userMapper.update(user) > 0;
+        }
+        return false;
+    }
 }

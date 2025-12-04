@@ -3,6 +3,8 @@ package com.example.liyuan.mapper;
 import com.example.liyuan.entity.User;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
 
@@ -29,4 +31,28 @@ public interface UserMapper {
     int deleteById(Long id);
     @Update("UPDATE users SET user_type=#{userType}, update_time=#{updateTime} WHERE id=#{id}")
     int updateUserType(User user);
+    @Update("UPDATE users SET custom_nickname = #{customNickname}, " +
+            "bio = #{bio}, update_time = #{updateTime} WHERE id = #{id}")
+    int updateCustomInfo(User user);
+    @Select("<script>" +
+            "SELECT * FROM users WHERE 1=1 " +
+            "<if test='keyword != null and keyword != \"\"'>" +
+            "   AND (nickname LIKE CONCAT('%', #{keyword}, '%') " +
+            "   OR custom_nickname LIKE CONCAT('%', #{keyword}, '%') " +
+            "   OR id = #{keyword})" +
+            "</if>" +
+            "<if test='userType != null'>" +
+            "   AND user_type = #{userType}" +
+            "</if>" +
+            "ORDER BY create_time DESC" +
+            "</script>")
+    List<User> searchUsers(@Param("keyword") String keyword, @Param("userType") Integer userType);
+
+    // 获取用户总数
+    @Select("SELECT COUNT(*) FROM users")
+    int countAllUsers();
+
+    // 按类型获取用户数
+    @Select("SELECT COUNT(*) FROM users WHERE user_type = #{userType}")
+    int countUsersByType(@Param("userType") Integer userType);
 }

@@ -30,4 +30,5 @@ public interface SongRequestMapper {
             "LEFT JOIN users u ON sr.user_id = u.id " +
             "WHERE sr.status = 0 ORDER BY sr.create_time DESC")
     List<SongRequest> selectAvailableRequestsWithUserInfo();
+
 }

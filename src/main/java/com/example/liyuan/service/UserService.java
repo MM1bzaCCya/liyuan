@@ -8,5 +8,5 @@ public interface UserService {
     Integer getUserPoints(Long id);
     boolean addUserPoints(Long id, Integer points);
     boolean updateUserType(Long userId, Integer userType);
-
+    boolean deductUserPoints(Long id, Integer points);
 }

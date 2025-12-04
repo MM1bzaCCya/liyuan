@@ -6,6 +6,7 @@ import com.example.liyuan.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -70,4 +71,29 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderById(Long orderId) {
         return orderMapper.selectById(orderId);
     }
+    @Override
+    public boolean createOrderFromGrabWithPoints(Long requestId, Long grabId, Long userId, Long singerId,
+                                                 String songName, String originalSinger, Integer points) {
+        Order order = new Order();
+        order.setRequestId(requestId);
+        order.setGrabId(grabId);
+        order.setUserId(userId);
+        order.setSingerId(singerId);
+        order.setSongName(songName);
+        order.setOriginalSinger(originalSinger);
+        order.setStatus(0); // 待演唱
+        order.setAmount(BigDecimal.ZERO); // 积分支付，金额为0
+        order.setPoints(points); // 记录消耗的积分
+        order.setPaymentType("points"); // 支付类型为积分
+
+        // 设置排队号（当前最大排队号+1）
+        Integer maxQueueNumber = orderMapper.selectMaxQueueNumber();
+        order.setQueueNumber(maxQueueNumber != null ? maxQueueNumber + 1 : 1);
+
+        order.setCreateTime(LocalDateTime.now());
+        order.setUpdateTime(LocalDateTime.now());
+
+        return orderMapper.insert(order) > 0;
+    }
+
 }

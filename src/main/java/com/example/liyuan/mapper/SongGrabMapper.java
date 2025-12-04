@@ -7,8 +7,8 @@ import java.util.List;
 
 @Mapper
 public interface SongGrabMapper {
-    @Insert("INSERT INTO song_grabs (request_id, singer_id, status, create_time, update_time) " +
-            "VALUES (#{requestId}, #{singerId}, #{status}, #{createTime}, #{updateTime})")
+    @Insert("INSERT INTO song_grabs (request_id, singer_id, status, create_time, update_time, audio_local_path, audio_duration) " +
+            "VALUES (#{requestId}, #{singerId}, #{status}, #{createTime}, #{updateTime}, #{audioLocalPath}, #{audioDuration})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(SongGrab songGrab);
 
@@ -36,4 +36,7 @@ public interface SongGrabMapper {
 
     @Select("SELECT COUNT(*) FROM song_grabs WHERE request_id = #{requestId} AND singer_id = #{singerId}")
     int countByRequestAndSinger(@Param("requestId") Long requestId, @Param("singerId") Long singerId);
+
+    @Update("UPDATE song_grabs SET audio_local_path = #{audioLocalPath}, audio_duration = #{audioDuration}, update_time = #{updateTime} WHERE id = #{id}")
+    int updateAudioInfo(SongGrab songGrab);
 }

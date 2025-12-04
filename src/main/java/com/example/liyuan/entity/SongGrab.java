@@ -11,6 +11,9 @@ public class SongGrab {
     private Integer status; // 0-待确认, 1-已确认, 2-已拒绝
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private String audioUrl;         // 语音URL（如果上传到服务器）
+    private String audioLocalPath;   // 语音本地路径
+    private Integer audioDuration;   // 语音时长（秒）
 
     // 关联字段（非数据库字段）
     private String singerName;

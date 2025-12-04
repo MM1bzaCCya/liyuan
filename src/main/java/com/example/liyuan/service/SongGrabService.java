@@ -10,4 +10,6 @@ public interface SongGrabService {
     List<SongGrab> getGrabsBySinger(Long singerId);
     boolean updateGrabStatus(Long grabId, Integer status);
     SongGrab getGrabById(Long grabId);
+    boolean updateAudioInfo(Long grabId, String audioLocalPath, Integer audioDuration);
+    boolean grabSong(Long requestId, Long singerId, String audioLocalPath, Integer audioDuration);
 }

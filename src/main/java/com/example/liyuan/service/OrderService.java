@@ -11,4 +11,6 @@ public interface OrderService {
     List<Order> getAllOrders();
     boolean updateOrderStatus(Long orderId, Integer status);
     Order getOrderById(Long orderId);
+    boolean createOrderFromGrabWithPoints(Long requestId, Long grabId, Long userId, Long singerId,
+                                          String songName, String originalSinger, Integer points);
 }
