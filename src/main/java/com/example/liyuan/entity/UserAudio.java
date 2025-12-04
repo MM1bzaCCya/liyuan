@@ -11,4 +11,6 @@ public class UserAudio {
     private String audioLocalPath;
     private Integer audioDuration;
     private LocalDateTime createdAt;
+    private String audioUrl;  // 服务器可访问URL
+    private Long fileSize;    // 文件大小
 }

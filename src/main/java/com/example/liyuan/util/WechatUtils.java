@@ -15,7 +15,7 @@ import java.util.Map;
 public class WechatUtils {
 
     // 添加 logger 实例
-    private static final Logger logger = LoggerFactory.getLogger(WechatUtils.class);
+    public static final Logger logger = LoggerFactory.getLogger(WechatUtils.class);
 
     @Value("${wechat.appid}")
     private String appid;

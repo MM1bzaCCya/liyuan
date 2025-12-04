@@ -7,10 +7,14 @@ import com.example.liyuan.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
+import static com.example.liyuan.util.WechatUtils.logger;
 
 @RestController
 @RequestMapping("/admin")
@@ -30,6 +34,8 @@ public class AdminController {
         try {
             Map<String, Object> stats = adminService.getUserStats();
 
+            logger.info("获取用户统计信息成功: {}", stats);
+
             Map<String, Object> response = new HashMap<>();
             response.put("code", 200);
             response.put("msg", "success");
@@ -38,6 +44,8 @@ public class AdminController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            logger.error("获取统计信息失败: {}", e.getMessage(), e);
+
             Map<String, Object> response = new HashMap<>();
             response.put("code", 500);
             response.put("msg", "获取统计信息失败: " + e.getMessage());
@@ -47,27 +55,48 @@ public class AdminController {
     }
 
     /**
-     * 获取所有用户列表（支持搜索和筛选）
+     * 获取用户列表（支持搜索和筛选） - 修复版本
      */
     @GetMapping("/users")
     public ResponseEntity<Map<String, Object>> getAllUsers(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "15") int size,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String userTypeStr) {  // 改为 String 类型
+            @RequestParam(value = "userType", required = false) String userTypeParam, // 使用 value 指定参数名
+            HttpServletRequest request) { // 添加 HttpServletRequest 获取原始参数
+
+        // 获取所有请求参数进行调试
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        logger.info("===== 开始处理用户列表请求 =====");
+        logger.info("请求URL: {}", request.getRequestURL());
+        logger.info("查询字符串: {}", request.getQueryString());
+        logger.info("所有请求参数: ");
+        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+            logger.info("  {} = {}", entry.getKey(), String.join(", ", entry.getValue()));
+        }
+        logger.info("解析到的参数 - page: {}, size: {}, keyword: {}, userTypeParam: {}",
+                page, size, keyword, userTypeParam);
 
         try {
             Integer userType = null;
-            if (userTypeStr != null && !"null".equals(userTypeStr) && !userTypeStr.isEmpty()) {
+            if (userTypeParam != null && !userTypeParam.trim().isEmpty()) {
                 try {
-                    userType = Integer.parseInt(userTypeStr);
+                    userType = Integer.parseInt(userTypeParam.trim());
+                    logger.info("userTypeParam转换成功: {} -> {}", userTypeParam, userType);
                 } catch (NumberFormatException e) {
-                    // 如果无法解析为整数，保持为 null
+                    logger.warn("userTypeParam解析失败: {}", userTypeParam);
                     userType = null;
                 }
+            } else {
+                logger.info("userTypeParam为空或空字符串，userType设置为null");
             }
 
+            logger.info("调用adminService.getUsers()，参数: page={}, size={}, keyword={}, userType={}",
+                    page, size, keyword, userType);
+
             Map<String, Object> result = adminService.getUsers(page, size, keyword, userType);
+
+            logger.info("用户列表查询完成，返回 {} 条记录", result.get("total"));
 
             Map<String, Object> response = new HashMap<>();
             response.put("code", 200);
@@ -77,6 +106,8 @@ public class AdminController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            logger.error("获取用户列表失败: {}", e.getMessage(), e);
+
             Map<String, Object> response = new HashMap<>();
             response.put("code", 500);
             response.put("msg", "获取用户列表失败: " + e.getMessage());

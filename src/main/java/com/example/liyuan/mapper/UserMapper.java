@@ -39,7 +39,7 @@ public interface UserMapper {
             "<if test='keyword != null and keyword != \"\"'>" +
             "   AND (nickname LIKE CONCAT('%', #{keyword}, '%') " +
             "   OR custom_nickname LIKE CONCAT('%', #{keyword}, '%') " +
-            "   OR id = #{keyword})" +
+            "   OR CAST(id AS CHAR) = #{keyword})" +  // 将id转换为字符串比较
             "</if>" +
             "<if test='userType != null'>" +
             "   AND user_type = #{userType}" +

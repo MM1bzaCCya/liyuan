@@ -35,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/users/**").permitAll()
                 .antMatchers("/admin/audios/**").permitAll()
                 .antMatchers("/admin/orders/**").permitAll()
+                .antMatchers("/file/**").permitAll()
+                .antMatchers("/api/uploads/**").permitAll()
+                .antMatchers("/uploads/**").permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
     }

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.liyuan.util.WechatUtils.logger;
+
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -39,11 +41,20 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Map<String, Object> getUsers(int page, int size, String keyword, Integer userType) {
+        logger.info("获取用户列表 - page: {}, size: {}, keyword: {}, userType: {}",
+                page, size, keyword, userType);
+
         // 计算分页
         int offset = (page - 1) * size;
 
         // 获取所有符合条件的用户
         List<User> allUsers = userMapper.searchUsers(keyword, userType);
+
+        logger.info("数据库查询结果: {} 条记录", allUsers.size());
+        for (User user : allUsers) {
+            logger.debug("用户ID: {}, 昵称: {}, 用户类型: {}",
+                    user.getId(), user.getNickname(), user.getUserType());
+        }
 
         // 手动分页
         int total = allUsers.size();
@@ -66,14 +77,20 @@ public class AdminServiceImpl implements AdminService {
         result.put("size", size);
         result.put("pages", totalPages);
 
+        logger.info("返回结果: 总记录数={}, 当前页记录数={}, 总页数={}",
+                total, pageData.size(), totalPages);
+
         return result;
     }
 
     @Override
     @Transactional
     public boolean updateUserRole(Long userId, Integer userType) {
+        logger.info("修改用户身份 - userId: {}, userType: {}", userId, userType);
+
         User user = userMapper.selectById(userId);
         if (user == null) {
+            logger.warn("用户不存在 - userId: {}", userId);
             return false;
         }
 
@@ -82,6 +99,8 @@ public class AdminServiceImpl implements AdminService {
         user.setUpdateTime(LocalDateTime.now());
 
         int rows = userMapper.updateUserType(user);
+        logger.info("更新用户类型结果: {} 行受影响", rows);
+
         return rows > 0;
     }
 
